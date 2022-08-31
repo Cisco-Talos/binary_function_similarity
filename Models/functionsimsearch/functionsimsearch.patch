@@ -1,0 +1,182 @@
+diff -Nru ../functionsimsearch/Dockerfile ./Dockerfile
+--- ../functionsimsearch/Dockerfile	2022-08-18 22:19:41.000000000 +0200
++++ ./Dockerfile	2022-05-13 10:46:43.000000000 +0200
+@@ -1,25 +1,48 @@
+ FROM ubuntu:bionic
+ 
+-RUN chmod 777 /tmp
+ RUN apt-get update && apt-get -y upgrade
+-RUN apt-get install -y git wget cmake sudo gcc-7 g++-7 python3-pip zlib1g-dev googletest
++RUN apt-get install -y vim git wget cmake sudo gcc-7 g++-7 python3-pip zlib1g-dev googletest
+ RUN apt-get install -y libgtest-dev libgflags-dev libz-dev libelf-dev g++ python3-pip libboost-system-dev libboost-thread-dev libboost-date-time-dev
+ 
++RUN chmod 777 /tmp
+ RUN mkdir /code
+ 
+ # build functionsimsearch
+-RUN cd /code && \
+-    git clone https://github.com/google/functionsimsearch.git && \
+-    cd functionsimsearch && \
+-    chmod +x ./build_dependencies.sh && \
+-    ./build_dependencies.sh && \
+-    make -j 16
++# RUN cd /code && \
++#     git clone https://github.com/google/functionsimsearch.git && \
++#     cd functionsimsearch && \
++#     chmod +x ./build_dependencies.sh && \
++#     ./build_dependencies.sh && \
++#     make -j 16
++
++# build the deps before the code so that docker can cache it
++RUN mkdir /code/functionsimsearch
++COPY build_dependencies.sh /code/functionsimsearch
++
++
++RUN cd /code/functionsimsearch && chmod +x ./build_dependencies.sh && ./build_dependencies.sh
++
++# deps for the analysis script
++RUN pip3 install click ipython
++
++COPY . /code/functionsimsearch
++RUN cd /code/functionsimsearch && make -j 4 && python3 setup.py install --user
++
++# volume for input jsons and output results
++VOLUME /input
++VOLUME /output
+ 
+ # dispatch via entrypoint script
+ # recommend mapping the /pwd volume, probably like (for ELF file):
+ #
+ #    docker run -it --rm -v $(pwd):/pwd functionsimsearch disassemble ELF /pwd/someexe
+-VOLUME /pwd
+-WORKDIR /code/functionsimsearch
+-RUN chmod +x /code/functionsimsearch/entrypoint.sh
+-ENTRYPOINT ["/code/functionsimsearch/entrypoint.sh"]
++# VOLUME /pwd
++# RUN chmod +x /code/functionsimsearch/entrypoint.sh
++# ENTRYPOINT ["/code/functionsimsearch/entrypoint.sh"]
++
++ENV LC_ALL=C.UTF-8
++ENV LANG=C.UTF-8
++
++WORKDIR /
++
++COPY fss_simhasher.py /fss_simhasher.py
+diff -Nru ../functionsimsearch/build_dependencies.sh ./build_dependencies.sh
+--- ../functionsimsearch/build_dependencies.sh	2022-08-18 22:19:41.000000000 +0200
++++ ./build_dependencies.sh	2022-05-13 10:46:43.000000000 +0200
+@@ -27,6 +27,7 @@
+ # Download PicoSHA, pe-parse, SPII and the C++ JSON library.
+ git clone https://github.com/okdshin/PicoSHA2.git
+ git clone https://github.com/trailofbits/pe-parse.git
++cd pe-parse && git checkout bd68ba418f2a9099dfc28fa1ea2e7b3f74e0917b; cd -
+ git clone https://github.com/PetterS/spii.git
+ mkdir json
+ mkdir json/src
+@@ -50,6 +51,7 @@
+ 
+ # Build Dyninst
+ cd dyninst-9.3.2
++sed -i 's/http:\/\/www.paradyn.org\/libdwarf\/libdwarf-20130126.tar.gz/https:\/\/github.com\/davea42\/libdwarf-code\/archive\/refs\/tags\/20130126.tar.gz/' cmake/packages.cmake
+ cmake ./CMakeLists.txt
+ # Need to limit parallelism because 8-core DynInst builds exhaust 30 Gigs of
+ # RAM on my test systems.
+@@ -59,6 +61,5 @@
+ cd ..
+ 
+ # Finally build functionsimsearch tools
+-cd ..
+-make -j
+-
++# cd ..
++# make -j
+diff -Nru ../functionsimsearch/disassembly/extractimmediate.cpp ./disassembly/extractimmediate.cpp
+--- ../functionsimsearch/disassembly/extractimmediate.cpp	2022-08-18 22:19:40.000000000 +0200
++++ ./disassembly/extractimmediate.cpp	2022-05-13 10:46:43.000000000 +0200
+@@ -1,37 +1,32 @@
+ #include <algorithm>
+ #include <regex>
+ #include <string>
++#include <iostream>
+ 
+ // this regex was provided courtesy of mark brand.
++// constexpr char extraction_regex[] =
++//   "(?:\\W|0x|^)([[:xdigit:]]+)(?:h|\\W|$)";
++
++// Our immediates come from capstone, and they are already normalized: #0xabcd or #-0xabcd
+ constexpr char extraction_regex[] =
+-  "(?:\\W|0x|^)([[:xdigit:]]+)(?:h|\\W|$)";
++  "#(-?0x[[:xdigit:]]+)";
+ 
+-// The following code is the ugliest-imaginable solution to extracting operands,
+-// but I fear I do not know any better.
++// cleaned up the original code
+ size_t ExtractImmediateFromString(const std::string& operand,
+   std::vector<uint64_t>* results) {
+   static std::regex re(extraction_regex, std::regex_constants::ECMAScript);
+   size_t count = 0;
+-  std::sregex_iterator next(operand.begin(), operand.end(), re);
+-  std::sregex_iterator end;
+-  while (next != end) {
+-    std::smatch match = *next;
+-    for (size_t i = 0; i < match.size(); ++i) {
+-      std::string immediate = match[i].str();
+-      uint64_t val = strtoull(immediate.c_str(), nullptr, 16);
+-      if (val != 0) {
+-        // The regular expression sometimes extracts the same immediate twice.
+-        // TODO(thomasdullien): Fix the regular expression and then remove this
+-        // code.
+-        if ((results->size() > 0) && (results->back() == val)) {
+-          continue;
+-        }
++  // std::cout << "operand: " << operand << std::endl;
++  std::smatch match;
++  if (std::regex_match(operand, match, re)) {
++      if (match.ready()) {
++        std::string immediate = match[1];
++        // std::cout << "imm: " << immediate << std::endl;
++        uint64_t val = strtoull(immediate.c_str(), nullptr, 16);
++        // std::cout << val << std::endl;
+         results->push_back(val);
++        count++;
+       }
+-    }
+-    next++;
+-    ++count;
+   }
+   return count;
+ }
+-
+diff -Nru ../functionsimsearch/pybindings/pybindings.cpp ./pybindings/pybindings.cpp
+--- ../functionsimsearch/pybindings/pybindings.cpp	2022-08-18 22:19:41.000000000 +0200
++++ ./pybindings/pybindings.cpp	2022-05-13 10:46:43.000000000 +0200
+@@ -302,7 +302,7 @@
+ 
+   // End of debug code.
+   self->function_simhasher_ = new FunctionSimHasher(weightsfile,
+-    feature_options, logging_options);
++    feature_options, logging_options, mnem_weight, graphlet_weight, immediate_weight);
+   return 0;
+ }
+ 
+diff -Nru ../functionsimsearch/searchbackend/functionsimhash.cpp ./searchbackend/functionsimhash.cpp
+--- ../functionsimsearch/searchbackend/functionsimhash.cpp	2022-08-18 22:19:41.000000000 +0200
++++ ./searchbackend/functionsimhash.cpp	2022-05-13 10:46:43.000000000 +0200
+@@ -12,6 +12,8 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
++#include <iostream>
++
+ #include "InstructionDecoder.h"
+ #include "util/util.hpp"
+ #include "searchbackend/functionsimhash.hpp"
+@@ -84,6 +86,8 @@
+   // the same value over and over again will 'dominate' the entire hash).
+   std::map<uint64_t, uint64_t> feature_cardinalities;
+ 
++  // std::cout << "CalculateFunctionSimHash{IMM=" << default_immediate_weight_ << ",MNEM=" << default_mnemonic_weight_ << ",GRAPH=" << default_graphlet_weight_ << "}" << std::endl;
++
+   // TODO(thomasdullien): The following code (for adding graph, mnemonic, and
+   // immediate features) has a lot of code duplication and should be cleaned
+   // up to be more DRY.

@@ -1,0 +1,2 @@
+idb_path,fva,func_name,start_ea,end_ea,bb_num,bb_list,hashopcodes
+IDA_scripts/IDA_flowchart/testdata/hello.i64,0x7b0,__do_global_dtors_aux,0x7b0,0x7ea,5,0x7b0;0x7b9;0x7c7;0x7d3;0x7e8,14a3a724079e8ba7de32222163f7f48c567f7e1a491cc7b5740a8db7bbc13300

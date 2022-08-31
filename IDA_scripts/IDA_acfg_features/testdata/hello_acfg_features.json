@@ -1,0 +1,146 @@
+{
+    "IDA_scripts/IDA_acfg_features/testdata/hello.i64":
+    {
+        "0x7b0":
+        {
+            "basic_blocks":
+            {
+                "1968":
+                {
+                    "bb_len": 9,
+                    "bb_numerics":
+                    [
+                        0,
+                        2024
+                    ],
+                    "bb_strings":
+                    [],
+                    "n_arith_instrs": 0,
+                    "n_call_instrs": 0,
+                    "n_instructions": 2,
+                    "n_logic_instrs": 0,
+                    "n_numeric_consts": 2,
+                    "n_redirect_instrs": 1,
+                    "n_string_consts": 0,
+                    "n_transfer_instrs": 0
+                },
+                "1977":
+                {
+                    "bb_len": 14,
+                    "bb_numerics":
+                    [
+                        0,
+                        2003
+                    ],
+                    "bb_strings":
+                    [],
+                    "n_arith_instrs": 0,
+                    "n_call_instrs": 0,
+                    "n_instructions": 4,
+                    "n_logic_instrs": 0,
+                    "n_numeric_consts": 2,
+                    "n_redirect_instrs": 1,
+                    "n_string_consts": 0,
+                    "n_transfer_instrs": 2
+                },
+                "1991":
+                {
+                    "bb_len": 12,
+                    "bb_numerics":
+                    [
+                        1760
+                    ],
+                    "bb_strings":
+                    [],
+                    "n_arith_instrs": 0,
+                    "n_call_instrs": 1,
+                    "n_instructions": 2,
+                    "n_logic_instrs": 0,
+                    "n_numeric_consts": 1,
+                    "n_redirect_instrs": 1,
+                    "n_string_consts": 0,
+                    "n_transfer_instrs": 1
+                },
+                "2003":
+                {
+                    "bb_len": 14,
+                    "bb_numerics":
+                    [
+                        1824,
+                        1
+                    ],
+                    "bb_strings":
+                    [],
+                    "n_arith_instrs": 0,
+                    "n_call_instrs": 1,
+                    "n_instructions": 4,
+                    "n_logic_instrs": 0,
+                    "n_numeric_consts": 2,
+                    "n_redirect_instrs": 2,
+                    "n_string_consts": 0,
+                    "n_transfer_instrs": 1
+                },
+                "2024":
+                {
+                    "bb_len": 2,
+                    "bb_numerics":
+                    [],
+                    "bb_strings":
+                    [],
+                    "n_arith_instrs": 0,
+                    "n_call_instrs": 0,
+                    "n_instructions": 1,
+                    "n_logic_instrs": 0,
+                    "n_numeric_consts": 0,
+                    "n_redirect_instrs": 1,
+                    "n_string_consts": 0,
+                    "n_transfer_instrs": 0
+                }
+            },
+            "edges":
+            [
+                [
+                    1968,
+                    1977
+                ],
+                [
+                    1991,
+                    2003
+                ],
+                [
+                    1968,
+                    2024
+                ],
+                [
+                    1977,
+                    2003
+                ],
+                [
+                    1977,
+                    1991
+                ]
+            ],
+            "elapsed_time": 0.0010039806365966797,
+            "features":
+            {
+                "n_bb": 5,
+                "n_edges": 5,
+                "n_func_calls": 2,
+                "n_incoming_calls": 0,
+                "n_instructions": 13,
+                "n_logic_instrs": 0,
+                "n_redirections": 6,
+                "n_transfer_instrs": 4,
+                "size_local_variables": 0
+            },
+            "nodes":
+            [
+                1968,
+                1977,
+                2003,
+                2024,
+                1991
+            ]
+        }
+    }
+}

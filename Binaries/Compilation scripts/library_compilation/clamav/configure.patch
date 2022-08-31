@@ -1,0 +1,40 @@
+diff --git a/configure b/configure
+index 9bfe4b48a..a4070cd50 100755
+--- a/configure
++++ b/configure
+@@ -22083,10 +22083,32 @@ save_LIBS="$LIBS"
+ SSL_LIBS="$LIBS -lssl -lcrypto -lz"
+ LIBS="$LIBS $SSL_LIBS"
+ 
++# Check whether --with-zlib was given.
++if test "${with_zlib+set}" = set; then :
++  withval=$with_zlib;
++if test "$withval"; then
++  ZLIB_HOME="$withval"
++  { $as_echo "$as_me:${as_lineno-$LINENO}: result: using $ZLIB_HOME" >&5
++$as_echo "using $ZLIB_HOME" >&6; }
++fi
++
++else
++
++ZLIB_HOME=/usr/local
++if test ! -f "$ZLIB_HOME/include/zlib.h"
++then
++  ZLIB_HOME=/usr
++fi
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ZLIB_HOME" >&5
++$as_echo "$ZLIB_HOME" >&6; }
++
++fi
++
++
+ if test "$LIBSSL_HOME" != "/usr"; then
+-    SSL_LDFLAGS="-L$LIBSSL_HOME/lib"
+-    SSL_CPPFLAGS="-I$LIBSSL_HOME/include"
+-    LDFLAGS="-L$LIBSSL_HOME/lib"
++    SSL_LDFLAGS="-L$LIBSSL_HOME/lib -L$ZLIB_HOME/lib"
++    SSL_CPPFLAGS="-I$LIBSSL_HOME/include -I$ZLIB_HOME/include"
++    LDFLAGS="-L$LIBSSL_HOME/lib -L$ZLIB_HOME/lib"
+     CFLAGS="$SSL_CPPFLAGS"
+ else
+     SSL_LDFLAGS=""

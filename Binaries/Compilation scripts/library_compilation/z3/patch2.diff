@@ -1,0 +1,56 @@
+diff --git a/scripts/mk_util.py b/scripts/mk_util.py
+index 6d5f7ef08..7916b0214 100644
+--- a/scripts/mk_util.py
++++ b/scripts/mk_util.py
+@@ -244,7 +244,9 @@ def rmf(fname):
+         os.remove(fname)
+ 
+ def exec_compiler_cmd(cmd):
++    print(cmd)
+     r = exec_cmd(cmd)
++    print(r)
+     if is_windows() or is_cygwin_mingw() or is_cygwin() or is_msys2():
+         rmf('a.exe')
+     else:
+@@ -502,6 +504,8 @@ def check_ar():
+ 
+ def find_cxx_compiler():
+     global CXX, CXX_COMPILERS
++    print(CXX)
++    print(CXX_COMPILERS)
+     if CXX is not None:
+         if test_cxx_compiler(CXX):
+             return CXX
+@@ -2515,8 +2519,8 @@ def mk_config():
+         check_ar()
+         CXX = find_cxx_compiler()
+         CC  = find_c_compiler()
+-        SLIBEXTRAFLAGS = ''
+-#       SLIBEXTRAFLAGS = '%s -Wl,-soname,libz3.so.0' % LDFLAGS
++#        SLIBEXTRAFLAGS = ''
++        SLIBEXTRAFLAGS = '%s -Wl,-soname,libz3.so.0' % LDFLAGS
+         EXE_EXT = ''
+         LIB_EXT = '.a'
+         if GPROF:
+@@ -2545,7 +2549,7 @@ def mk_config():
+             EXAMP_DEBUG_FLAG = '-g'
+             CPPFLAGS     = '%s -DZ3DEBUG -D_DEBUG' % CPPFLAGS
+         else:
+-            CXXFLAGS     = '%s -O3' % CXXFLAGS
++            CXXFLAGS     = '%s' % CXXFLAGS
+             if GPROF:
+                 CXXFLAGS     += '-fomit-frame-pointer'
+             CPPFLAGS     = '%s -DNDEBUG -D_EXTERNAL_RELEASE' % CPPFLAGS
+diff --git a/src/util/lp/lp_solver.cpp b/src/util/lp/lp_solver.cpp
+index ea88dd14c..2a1b89113 100644
+--- a/src/util/lp/lp_solver.cpp
++++ b/src/util/lp/lp_solver.cpp
+@@ -44,6 +44,8 @@ template void lp::lp_solver<lp::mpq, lp::mpq>::flip_costs();
+ template lp::mpq lp::lp_solver<lp::mpq, lp::mpq>::get_column_cost_value(unsigned int, lp::column_info<lp::mpq>*) const;
+ template int lp::lp_solver<lp::mpq, lp::mpq>::get_column_index_by_name(std::string) const;
+ template lp::mpq lp::lp_solver<lp::mpq, lp::mpq>::get_column_value_by_name(std::string) const;
++template std::string lp::lp_solver<double, double>::get_column_name(unsigned int) const;
++template std::string lp::lp_solver<lp::mpq, lp::mpq>::get_column_name(unsigned int) const;
+ template lp::mpq lp::lp_solver<lp::mpq, lp::mpq>::get_column_value_with_core_solver(unsigned int, lp::lp_core_solver_base<lp::mpq, lp::mpq>*) const;
+ template lp::column_info<lp::mpq>* lp::lp_solver<lp::mpq, lp::mpq>::get_or_create_column_info(unsigned int);
+ template void lp::lp_solver<lp::mpq, lp::mpq>::give_symbolic_name_to_column(std::string, unsigned int);

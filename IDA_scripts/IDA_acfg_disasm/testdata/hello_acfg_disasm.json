@@ -1,0 +1,181 @@
+{
+    "IDA_scripts/IDA_acfg_disasm/testdata/hello.i64":
+    {
+        "0x7b0":
+        {
+            "elapsed_time": 0.001104116439819336,
+            "nodes":
+            [
+                1968,
+                1977,
+                2003,
+                2024,
+                1991
+            ],
+            "edges":
+            [
+                [
+                    1968,
+                    1977
+                ],
+                [
+                    1991,
+                    2003
+                ],
+                [
+                    1968,
+                    2024
+                ],
+                [
+                    1977,
+                    2003
+                ],
+                [
+                    1977,
+                    1991
+                ]
+            ],
+            "basic_blocks":
+            {
+                "1968":
+                {
+                    "bb_len": 9,
+                    "bb_mnems":
+                    [
+                        "cmp",
+                        "jne"
+                    ],
+                    "bb_norm":
+                    [
+                        "cmp_[rip+2099577],_0x0",
+                        "jne_0x7e8"
+                    ],
+                    "bb_disasm":
+                    [
+                        "cmp byte ptr [rip + 0x200979], 0",
+                        "jne 0x7e8"
+                    ],
+                    "b64_bytes": "gD15CSAAAHUv",
+                    "bb_heads":
+                    [
+                        1968,
+                        1975
+                    ]
+                },
+                "1977":
+                {
+                    "bb_len": 14,
+                    "bb_mnems":
+                    [
+                        "cmp",
+                        "push",
+                        "mov",
+                        "je"
+                    ],
+                    "bb_norm":
+                    [
+                        "cmp_[rip+2099215],_0x0",
+                        "push_rbp",
+                        "mov_rbp,_rsp",
+                        "je_0x7d3"
+                    ],
+                    "bb_disasm":
+                    [
+                        "cmp qword ptr [rip + 0x20080f], 0",
+                        "push rbp",
+                        "mov rbp, rsp",
+                        "je 0x7d3"
+                    ],
+                    "b64_bytes": "SIM9DwggAABVSInldAw=",
+                    "bb_heads":
+                    [
+                        1977,
+                        1985,
+                        1986,
+                        1989
+                    ]
+                },
+                "2003":
+                {
+                    "bb_len": 14,
+                    "bb_mnems":
+                    [
+                        "call",
+                        "mov",
+                        "pop",
+                        "ret"
+                    ],
+                    "bb_norm":
+                    [
+                        "call_0x720",
+                        "mov_[rip+2099537],_0x1",
+                        "pop_rbp",
+                        "ret"
+                    ],
+                    "bb_disasm":
+                    [
+                        "call 0x720",
+                        "mov byte ptr [rip + 0x200951], 1",
+                        "pop rbp",
+                        "ret "
+                    ],
+                    "b64_bytes": "6Ej////GBVEJIAABXcM=",
+                    "bb_heads":
+                    [
+                        2003,
+                        2008,
+                        2015,
+                        2016
+                    ]
+                },
+                "2024":
+                {
+                    "bb_len": 2,
+                    "bb_mnems":
+                    [
+                        "ret"
+                    ],
+                    "bb_norm":
+                    [
+                        "ret"
+                    ],
+                    "bb_disasm":
+                    [
+                        "ret "
+                    ],
+                    "b64_bytes": "88M=",
+                    "bb_heads":
+                    [
+                        2024
+                    ]
+                },
+                "1991":
+                {
+                    "bb_len": 12,
+                    "bb_mnems":
+                    [
+                        "mov",
+                        "call"
+                    ],
+                    "bb_norm":
+                    [
+                        "mov_rdi,_[rip+2099258]",
+                        "call_0x6e0"
+                    ],
+                    "bb_disasm":
+                    [
+                        "mov rdi, qword ptr [rip + 0x20083a]",
+                        "call 0x6e0"
+                    ],
+                    "b64_bytes": "SIs9OgggAOgN////",
+                    "bb_heads":
+                    [
+                        1991,
+                        1998
+                    ]
+                }
+            }
+        },
+        "arch": "x86-64"
+    }
+}
