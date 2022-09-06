@@ -25,3 +25,5 @@ DBs/Dataset-2/pairs/
 DBs/Dataset-Vulnerability/*.csv
 DBs/Dataset-Vulnerability/features/
 DBs/Dataset-Vulnerability/pairs/
+
+Results/data/

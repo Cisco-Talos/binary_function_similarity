@@ -50,6 +50,13 @@ FEATURES_DICT = {
     "Dataset-2/features.zip": "1Dp3MvTfIAG4iakjlAGqbsX_Y3Na_c_t8",
     "Dataset-Vulnerability/features.zip": "1NOL5DBem1TbI2Lcc0R64L7JM1BnJMDSp"
 }
+RESULTS_DICT = {
+    "Dataset-1-CodeCMR-results.zip": "1vQD4MBNR32VSARmLQE4c7GaBG5vYZPgN",
+    "Dataset-1-results.zip": "1D_7QUiGhr8c2aFdAwZEGYyVZR3DIdfbH",
+    "Dataset-2-results.zip": "1dJ9aXDvzQLWUWz0vDBVM5XG8Y33kFHwS",
+    "Dataset-Vulnerability-results.zip": "17Hv0ZhSwnzUMgWpXyXM2zaEYPrv21igZ",
+    "raw_results-results.zip": "1T5BfUnjn287VCNCit4W2-ggmckUl9JO7"
+}
 SHA256_DICT = {
     "Dataset-1.zip":
     "f45edac9a7414c3bef77b271bcba083656e148d08d2da8ed5d667d887af35e46",
@@ -65,11 +72,22 @@ SHA256_DICT = {
     "fe54af04ba2ca6de465e676194514cd85421c52d29a7ca8facccb2673d5b5705",
     "Dataset-Vulnerability/features.zip":
     "fd4677a349a198b5332742fc09eb6209ed3a5b3e463f7083a09a7ae398316742",
+    "Dataset-1-CodeCMR-results.zip":
+    "e0a26cb782c505a3f30b53aef1e1d84acccc1e2ebd559d1afe68e6ae3f5b767a",
+    "Dataset-1-results.zip":
+    "706a760348e3467f76313c6b07bf01e6c942002ce903dcb02b32ae5c89929bff",
+    "Dataset-2-results.zip":
+    "0f1041391491cb2abd013db240b5bdcbb48300a194e79cf098339489ee7494fb",
+    "Dataset-Vulnerability-results.zip":
+    "7350576e115605aaf9da667ef14a14d5d307487b48ca1391c6fbb7ef9ea1dbbf",
+    "raw_results-results.zip":
+    "6759a38f42440b46f5607148d0b66d9f5ab1b7854a7203a87b39e7f08580d9b3"
 }
 REPO_PATH = (os.path.dirname(os.path.abspath(__file__)))
 BINARIES_FOLDER = os.path.join(REPO_PATH, "Binaries")
 DATASET_FOLDER = os.path.join(REPO_PATH, "DBs")
 MODELS_FOLDER = os.path.join(REPO_PATH, "Models")
+RESULTS_FOLDER = os.path.join(REPO_PATH, "Results", "data")
 
 
 def compute_sha256(file_path):
@@ -159,15 +177,56 @@ def download_features():
         print("[!] Exception in download_features\n{}".format(e))
 
 
+def download_results_data():
+    """Download and unzip the archives containing the results of the exp."""
+    try:
+        if not os.path.isdir(RESULTS_FOLDER):
+            os.mkdir(RESULTS_FOLDER)
+
+        for zip_name, gid in RESULTS_DICT.items():
+            temp_dir = os.path.join(RESULTS_FOLDER, zip_name.split(".")[0])
+            if os.path.isdir(temp_dir):
+                print("[W] {} already exists".format(temp_dir))
+                continue
+
+            zip_path = os.path.join(RESULTS_FOLDER, zip_name)
+            print("Downloading {} ...".format(zip_name))
+            gdown.download(id=gid, output=zip_path, quiet=False)
+
+            if not os.path.isfile(zip_path):
+                print("[!] Error: file {} not found".format(zip_path))
+                continue
+
+            print("Checking checksum {} ...".format(zip_name))
+            sha = compute_sha256(zip_path)
+            if sha != SHA256_DICT[zip_name]:
+                print("[!] Checksum error: {} != {}".format(
+                    sha, SHA256_DICT[zip_name]))
+                continue
+
+            print("Extracting archive to {}...".format(RESULTS_FOLDER))
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(os.path.dirname(zip_path))
+
+            os.remove(zip_path)
+            print()
+
+    except Exception as e:
+        print("[!] Exception in download_results_data\n{}".format(e))
+
+
 @click.command()
 @click.option('--binaries', is_flag=True)
 @click.option('--features', is_flag=True)
-def main(binaries, features):
+@click.option('--results', is_flag=True)
+def main(binaries, features, results):
     """Download the dataset from Google Drive."""
     if binaries:
         download_binaries()
     if features:
         download_features()
+    if results:
+        download_results_data()
     print("That's all")
 
 

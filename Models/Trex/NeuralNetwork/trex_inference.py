@@ -107,8 +107,8 @@ def main(input_pairs, input_traces, model_checkpoint_dir,
 
         cs_list.append(torch.cosine_similarity(emb_a, emb_b)[0].item())
 
-    # Saving the cosine similarity in the 'cs' column
-    df['cs'] = cs_list[:df.shape[0]]
+    # Saving the cosine similarity in the 'sim' column
+    df['sim'] = cs_list[:df.shape[0]]
 
     pairs_fname = ntpath.basename(input_pairs)
     df_out = os.path.join(output_dir, "{}.trex_out.csv".format(pairs_fname))

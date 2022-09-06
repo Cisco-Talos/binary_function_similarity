@@ -1,0 +1,4 @@
+,model_name,XA,XC,XC+XB,XM
+0,Dataset-1-CodeCMR,0.98,0.98,0.98,0.98
+1,Dataset-1-CodeCMR_GGSNN_IR_200,0.87,0.87,0.87,0.88
+2,Dataset-1-CodeCMR_GGSNN_OPC_200,0.87,0.86,0.87,0.87
