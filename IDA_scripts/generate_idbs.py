@@ -37,6 +37,7 @@ import click
 import subprocess
 
 from os import getenv
+from os import makedirs
 from os import mkdir
 from os import walk
 from os.path import abspath
@@ -44,6 +45,9 @@ from os.path import dirname
 from os.path import isdir
 from os.path import isfile
 from os.path import join
+from os.path import relpath
+from os.path import samefile
+
 
 BIN_FOLDER = join(dirname(dirname(abspath(__file__))), 'Binaries')
 IDB_FOLDER = join(dirname(dirname(abspath(__file__))), 'IDBs')
@@ -103,15 +107,23 @@ def directory_walk(input_folder, output_folder):
         if not isdir(output_folder):
             mkdir(output_folder)
 
-        for root, _, files in walk(input_folder, output_folder):
+        for root, _, files in walk(input_folder):
             for fname in files:
                 if fname.endswith(".log") \
                         or fname.endswith(".idb") \
                         or fname.endswith(".i64"):
                     continue
 
+                tmp_out = output_folder
+                if not samefile(root, input_folder):
+                    tmp_out = join(
+                        output_folder,
+                        relpath(root, input_folder))
+                    if not isdir(tmp_out):
+                        makedirs(tmp_out)
+
                 input_path = join(root, fname)
-                output_path = join(output_folder, fname + ".i64")
+                output_path = join(tmp_out, fname + ".i64")
                 if export_idb(input_path, output_path):
                     export_success += 1
                 else:
