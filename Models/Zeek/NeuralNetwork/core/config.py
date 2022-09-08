@@ -49,7 +49,7 @@ def dump_config_to_json(config, outputdir):
         json.dump(config, f_out)
 
 
-def update_config_datasetone(config_dict):
+def update_config_datasetone(config_dict, outputdir):
     """Config for Dataset-1."""
     config_dict['training']['df_train_path'] = \
         "/input/Dataset-1/training_Dataset-1.csv"
@@ -70,16 +70,16 @@ def update_config_datasetone(config_dict):
             "/input/Dataset-1/pairs/testing/pos_testing_Dataset-1.csv"
         ],
         full_tests_outputs=[
-            "/output/Dataset-1/neg_rank_testing_Dataset-1_sim.csv",
-            "/output/Dataset-1/neg_testing_Dataset-1_sim.csv",
-            "/output/Dataset-1/pos_rank_testing_Dataset-1_sim.csv",
-            "/output/Dataset-1/pos_testing_Dataset-_sim2.csv"
+            os.path.join(outputdir, "neg_rank_testing_Dataset-1_sim.csv"),
+            os.path.join(outputdir, "neg_testing_Dataset-1_sim.csv"),
+            os.path.join(outputdir, "pos_rank_testing_Dataset-1_sim.csv"),
+            os.path.join(outputdir, "pos_testing_Dataset-_sim2.csv")
         ],
         features_testing_path="/input/Dataset-1/features/testing/zeek_Dataset-1_testing.json"
     )
 
 
-def update_config_datasettwo(config_dict):
+def update_config_datasettwo(config_dict, outputdir):
     """Config for Dataset-2."""
     config_dict['testing'] = dict(
         positive_path=None,
@@ -91,16 +91,16 @@ def update_config_datasettwo(config_dict):
             "/input/Dataset-2/pairs/pos_testing_Dataset-2.csv"
         ],
         full_tests_outputs=[
-            "/output/Dataset-2/neg_rank_testing_Dataset-2_sim.csv",
-            "/output/Dataset-2/neg_testing_Dataset-2_sim.csv",
-            "/output/Dataset-2/pos_rank_testing_Dataset-2_sim.csv",
-            "/output/Dataset-2/pos_testing_Dataset-_sim2.csv"
+            os.path.join(outputdir, "neg_rank_testing_Dataset-2_sim.csv"),
+            os.path.join(outputdir, "neg_testing_Dataset-2_sim.csv"),
+            os.path.join(outputdir, "pos_rank_testing_Dataset-2_sim.csv"),
+            os.path.join(outputdir, "pos_testing_Dataset-_sim2.csv")
         ],
         features_testing_path="/input/Dataset-2/features/zeek_Dataset-2.json"
     )
 
 
-def update_config_datasetvuln(config_dict):
+def update_config_datasetvuln(config_dict, outputdir):
     """Config for Dataset-Vulnerability."""
     config_dict['testing'] = dict(
         positive_path=None,
@@ -109,7 +109,7 @@ def update_config_datasetvuln(config_dict):
             "/input/Dataset-Vulnerability/pairs/pairs_testing_Dataset-Vulnerability.csv",
         ],
         full_tests_outputs=[
-            "/output/Dataset-Vulnerability/pairs_testing_Dataset-Vulnerability.csv",
+            os.path.join(outputdir, "pairs_testing_Dataset-Vulnerability.csv")
         ],
         features_testing_path="/input/Dataset-Vulnerability/features/zeek_Dataset-Vulnerability.json"
     )
@@ -140,10 +140,10 @@ def get_config(args):
     )
 
     if args.dataset == 'one':
-        update_config_datasetone(config_dict)
+        update_config_datasetone(config_dict, args.outputdir)
     elif args.dataset == 'two':
-        update_config_datasettwo(config_dict)
+        update_config_datasettwo(config_dict, args.outputdir)
     elif args.dataset == 'vuln':
-        update_config_datasetvuln(config_dict)
+        update_config_datasetvuln(config_dict, args.outputdir)
 
     return config_dict

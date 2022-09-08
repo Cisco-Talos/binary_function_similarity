@@ -19,12 +19,12 @@ The script will produce the following **output**:
 The following are the concrete steps to run the analysis within the provided Docker container:
 1. Build the docker image: 
 ```bash
-docker build Preprocessing/ -t zeek
+docker build --no-cache Preprocessing/ -t zeek
 ```
 
 2. Run the main script within the docker container: 
 ```bash
-docker run --rm -v <path_to_the_acfg_disasm_dir>:/input -v <path_to_the_zeek_output_dir>:/output -it zeek /code/zeek.py process /input /output [--workers-num 5]
+docker run --rm --name zeek_preprocessing -v <path_to_the_acfg_disasm_dir>:/input -v <path_to_the_zeek_output_dir>:/output -it zeek /code/zeek.py process /input /output [--workers-num 5]
 ```
 
 You can see all options of the `zeek.py process` command with:
@@ -34,16 +34,19 @@ docker run --rm -it zeek /code/zeek.py process --help
 
 For debugging only (to be run within the docker container):
 ```bash
-./zeek.py stats /input /output
+docker exec -it zeek_preprocessing /bin/bash
+/code/zeek.py stats /input /output
 ```
 This command shows stats on the "current" status, so you can run during or after the analysis has completed.
 
 ---
 
-Example: run ACFG disasm on the Dataset-Vulnerability
+Example: run `zeek.py process` on the Dataset-Vulnerability
 ```bash
-docker run --rm -v $(pwd)/../../DBs/Dataset-Vulnerability/features/acfg_disasm_Dataset-Vulnerability:/input -v $(pwd)/Preprocessing/zeek_intermediate/Dataset-Vulnerability:/output -it zeek /code/zeek.py process /input /output --workers-num 10
+docker run --rm --name zeek_preprocessing -v $(pwd)/../../DBs/Dataset-Vulnerability/features/acfg_disasm_Dataset-Vulnerability:/input -v $(pwd)/Preprocessing/zeek_intermediate/Dataset-Vulnerability:/output -it zeek /code/zeek.py process /input /output --workers-num 10
 ```
+
+Note: the path to the output directory `zeek_intermediate/Dataset-Vulnerability` is recursively created by the `zeek.py` script.
 
 ---
 
@@ -54,9 +57,7 @@ docker run --rm -v $(pwd)/Preprocessing/testdata/:/input -v $(pwd)/Preprocessing
 
 ### Notes on the output format of the first part
 
-The `zeek.json` output file contains only the minimum required intermediate data. For each binary the JSON includes:
-- the hashes for each analyzed function
-- how much time the analysis took.
+The `zeek.json` output file contains only the minimum required intermediate data, that is **the hashes for each analyzed function**.
 
 Each JSON file in the `jsons` directory contains the same information as in `zeek.json`, plus additional information which may be useful for debugging. In particular, these JSONs include so-called "raw hashes": raw hashes are the MD5 of the expression tree of each strand extracted from each VEX block (note on terminology: a binary contains one or more functions, a function contains one or more VEX blocks, a VEX block contains one or more strands. We calculate one hash for each strand). These raw hashes are then truncated to 10 bits, and then merged at the function level. These "merged hashes" constituted the (non-raw) "hashes" included in `zeek.json`.
 
@@ -67,7 +68,6 @@ The second part implements the machine learning component of Zeek. We also provi
 
 The neural network model takes in **input**:
 - The CSV files with the functions *to train*, or the pair of functions *to validate and test* the model. These files are already available for the [Datasets](../../DBs) we have released. The path of these files is hardcoded in the [`config.py`](NeuralNetwork/core/config.py) file, based on the dataset type.
-
 - The `zeek.json` files that come from the output of [Part 1](#part-1).
 - The model [checkpoint](NeuralNetwork/model_checkpoint) (only if the model is used in inference mode, i.e., during validation and testing).
 
@@ -81,34 +81,44 @@ The model will produce the following **output**:
 The following are the concrete steps to run the the neural network using our Docker container:
 1. Build the docker image: 
 ```bash
-docker build NeuralNetwork/ -t zeekneuralnetwork
+docker build --no-cache NeuralNetwork/ -t zeekneuralnetwork
 ```
 
 2. Run the Zeek neural network within the Docker container:
 ```bash
-docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/../../Results/Zeek:/output -it zeekneuralnetwork /code/zeek_nn.py [--train] [--test] [--num_epochs 10] [-c /code/model_checkpoint] [--dataset one]  -o /output
+docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/NeuralNetwork/:/output -it zeekneuralnetwork /code/zeek_nn.py [--train] [--test] [--num_epochs 10] [-c /code/model_checkpoint] [--dataset one]  -o /output/Dataset-x
 ```
+
+The `zeek_nn.py` program uses the path to the `/input` folder to locate the necessary files to run the training, validation and testing for the Dataset-1, Dataset-2 and Dataset-Vulnerability. In particular, the `zeek.json` file that is extracted in [Part 1](#part-1) of the README is automatically downloaded in the `features` directory for the [Datasets](../../DBs) we have released (more information in the [README](../../DBs/#download-the-features-for-each-dataset)). For simplicity, the path of the required files in input is hardcoded in the [`config.py`](NeuralNetwork/core/config.py) file (e.g., for the [Dataset-1](NeuralNetwork/core/config.py#L52)). Use the `--dataset` option to select the corresponding dataset: `--dataset one`, `--dataset two` or `--dataset vuln`.
+
 
 * You can see all options of the `zeek_nn.py` command with:
 ```bash
 docker run --rm -it zeekneuralnetwork /code/zeek_nn.py --help 
 ```
 
-* Run the training and test on the Dataset-1
-```bash
-docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/../../Results/Zeek:/output -it zeekneuralnetwork /code/zeek_nn.py --train --num_epochs 10 -c /code/model_checkpoint_$(date +'%Y-%m-%d') --dataset one -o /output/Dataset-1
-```
+---
 
+* Example: run the training on the Dataset-1
+```bash
+docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/NeuralNetwork:/output -it zeekneuralnetwork /code/zeek_nn.py --train --num_epochs 10 -c /code/model_checkpoint_$(date +'%Y-%m-%d') --dataset one -o /output/Dataset-1_training
+```
 The new trained model will be saved in `model_checkpoint_$(date +'%Y-%m-%d')`. Use the `--restore` option to continue the training of an existing checkpoint.
 
-* Run the validation and test on Dataset-2
+
+* Example: run the testing on Dataset-1 using the [model_checkpoint](NeuralNetwork/model_checkpoint) that we trained on Dataset-1:
 ```bash
-docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/../../Results/Zeek:/output -it zeekneuralnetwork /code/zeek_nn.py --test --dataset two -c /code/model_checkpoint -o /output/Dataset-2
+docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/NeuralNetwork/:/output -it zeekneuralnetwork /code/zeek_nn.py --test --dataset one -c /code/model_checkpoint -o /output/Dataset-1_testing
 ```
 
-* Run the test on the Dataset-Vulnerability 
+* Example: run the testing on Dataset-2 using the [model_checkpoint](NeuralNetwork/model_checkpoint) that we trained on Dataset-1:
 ```bash
-docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/../../Results/Zeek:/output -it zeekneuralnetwork /code/zeek_nn.py --test --dataset vuln -c /code/model_checkpoint -o /output/Dataset-Vulnerability
+docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/NeuralNetwork/:/output -it zeekneuralnetwork /code/zeek_nn.py --test --dataset two -c /code/model_checkpoint -o /output/Dataset-2_testing
+```
+
+* Example: run the testing on Dataset-Vulnerability using the [model_checkpoint](NeuralNetwork/model_checkpoint) that we trained on Dataset-1:
+```bash
+docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/NeuralNetwork/:/output -it zeekneuralnetwork /code/zeek_nn.py --test --dataset vuln -c /code/model_checkpoint -o /output/Dataset-Vulnerability
 ```
 
 ## How to use Zeek on a new dataset of functions
