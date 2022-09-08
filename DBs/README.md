@@ -232,7 +232,8 @@ Dataset-2
 │    ├── flowchart_Dataset-2.csv
 │    ├── fss_Dataset-2
 │    │   ├── ...
-│    └── selected_testing_Dataset-2.json
+│    ├── selected_testing_Dataset-2.json
+│    └── zeek_Dataset-2.json
 ├── pairs
 │    ├── neg_rank_testing_Dataset-2.csv
 │    ├── neg_testing_Dataset-2.csv
@@ -273,6 +274,7 @@ idx,idb_path_1,fva_1,func_name_1,idb_path_2,fva_2,func_name_2,db_type
 * `features/catalog1_Dataset-2`: the CSV files extracted using the Catalog1 IDA plugin
 * `features/acfg_features_Dataset-2`: the JSON files extracted using the "acfg features" IDA plugin
 * `features/acfg_disasm_Dataset-2`: the JSON files extracted using the "acfg disasm" IDA plugin
+* `features/zeek_Dataset-2.json`: the JSON file from Zeek features extraction script.
 
 #### [Optional] Dataset creation and features extraction steps
 This step is *optional* because the dataset and the features are already included in the release.
@@ -300,7 +302,8 @@ Dataset-Vulnerability
 │        ├── catalog1_Dataset-Vulnerability
 │        ├── flowchart_Dataset-Vulnerability.csv
 │        ├── fss_Dataset-Vulnerability
-│        └── selected_Dataset-Vulnerability.json
+│        ├── selected_Dataset-Vulnerability.json
+│        └── zeek_Dataset-Vulnerability.json
 ├── pairs
 │        └── pairs_testing_Dataset-Vulnerability.csv
 └── testing_Dataset-Vulnerability.csv
@@ -336,7 +339,8 @@ idx,idb_path_1,fva_1,func_name_1,idb_path_2,fva_2,func_name_2,db_type
 * `features/fss_Dataset-Vulnerability`: the JSON files extracted using the FunctionSimSearch IDA plugin
 * `features/catalog1_Dataset-Vulnerability`: the CSV files extracted using the Catalog1 IDA plugin
 * `features/acfg_features_Dataset-Vulnerability`: the JSON files extracted using the "acfg features" IDA plugin
-* `features/acfg_disasm_Dataset-Vulnerability`: the JSON files extracted using the "acfg disasm" IDA plugin.
+* `features/acfg_disasm_Dataset-Vulnerability`: the JSON files extracted using the "acfg disasm" IDA plugin
+* `features/zeek_Dataset-Vulnerability.json`: the JSON file from Zeek features extraction script.
 
 #### [Optional] Dataset creation and features extraction steps
 This step is *optional* because the dataset and the features are already included in the release.
