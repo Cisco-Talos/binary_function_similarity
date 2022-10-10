@@ -2,6 +2,24 @@
 
 The SAFE tool is constituted by three components. The first is used to create a vocabulary of assembly instructions and to pretrain the instruction embeddings. The second tool takes as input the [ACFG disasm](../../IDA_scripts/#ida-acfg-disasm) data and produces as output a number of intermediate results. Those are then taken as input by the third part, which implements the machine learning component.
 
+## Download the model data
+
+1. Activate the Python3 virtualenv
+```bash
+source ../../env/bin/activate
+```
+
+2. Download and unzip the model data in the corresponding folders:
+```bash
+python3 gdrive_model_download.py
+```
+
+The data will be unzipped in the following directories:
+```bash
+NeuralNetwork/model_checkpoint
+Pretraining/instruction_embeddings
+```
+
 ## Part 1
 
 The first part of the SAFE tool is implemented in a Python3 script called [`safe_pretraining.py`](Pretraining/safe_pretraining.py). We also provide a [Docker](Pretraining/Dockerfile) container with the required dependencies.
