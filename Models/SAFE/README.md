@@ -17,7 +17,7 @@ python3 gdrive_model_download.py
 The data will be unzipped in the following directories:
 ```bash
 NeuralNetwork/model_checkpoint
-Pretraining/instruction_embeddings
+Pretraining/Dataset-1_training
 ```
 
 ## Part 1

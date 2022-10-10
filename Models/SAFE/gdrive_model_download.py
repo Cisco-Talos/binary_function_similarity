@@ -41,15 +41,15 @@ import zipfile
 MODELS_DICT = {
     "NeuralNetwork/model_checkpoint.zip":
     "1SPYsR5Is8IJVTPNpStCdX7ibx-G3E2G3",
-    "Pretraining/instruction_embeddings.zip":
-    "1A7STkuH3uQy_8WJlPwU6YM2MQoxf-3HV"
+    "Pretraining/Dataset-1_training.zip":
+    "1gqHfVGrS1JVd1nvCjLge_5Bp8dv-xYNe"
 }
 
 SHA256_DICT = {
     "NeuralNetwork/model_checkpoint.zip":
     "7699e824cacfe2d6590b8b569a6240a0905b46cd1e68d311259cc43e5373dfa1",
-    "Pretraining/instruction_embeddings.zip":
-    "528751f367e321a956b5c07c32822cf617e85a547e979e07a47da6a9aef00806"
+    "Pretraining/Dataset-1_training.zip":
+    "8fee06f635576496c8ccd59189a8a416af9c1bb0aece34e71441641093b560b3"
 }
 
 
