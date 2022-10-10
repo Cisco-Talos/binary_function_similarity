@@ -69,6 +69,7 @@ The code in this repository is licensed under the [MIT License](LICENSE), howeve
 - The [`IDA_codeCMR.py`](Models/CodeCMR/IDA_CodeCMR/IDA_codeCMR.py) plugin is released under GPL v3.
 - The [`catalog1` folder](Models/Catalog1/catalog1) contains the source code of the Catalog1 library which is licensed under GPL v3.
 - The [`FunctionSimSearch` model](Models/functionsimsearch/) pulls the code from the [FunctionSimSearch project](https://github.com/googleprojectzero/functionsimsearch) which is released under Apache License 2.0.
+- The [`SAFE` model](Models/SAFE) contains part of the original source code of SAFE which is licensed under GPL v3.
 
 ## Bugs and feedback
 For help or issues, please submit a GitHub issue.

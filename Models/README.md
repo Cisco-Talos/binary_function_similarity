@@ -10,7 +10,6 @@ This directory contains the code for the tested approaches:
     * **TODO**: The code will be released soon
 - [GNN-s2v](GNN-s2v)
     * **TODO**: The code will be released soon
-- [SAFE](SAFE) 
-    * **TODO**: The code will be released soon
+- [SAFE](SAFE)
 - [Trex](Trex)
 - [Zeek](Zeek)
