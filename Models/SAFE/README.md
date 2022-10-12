@@ -22,6 +22,8 @@ Pretraining/Dataset-1_training
 
 ## Part 1
 
+**Note**: this step is not necessary to use the SAFE model in inference mode. The *model data* includes the vocabulary of assembly instructions and the pretrained instruction embeddings.
+
 The first part of the SAFE tool is implemented in a Python3 script called [`safe_pretraining.py`](Pretraining/safe_pretraining.py). We also provide a [Docker](Pretraining/Dockerfile) container with the required dependencies.
 
 The `safe_pretraining.py` script is designed to create a vocabulary of assembly instructions and to pretrain the instruction embeddings using the Word2Vec model (skip-gram). This step is **only required** once for the model training: at inference time the model uses the fixed vocabulary of instructions and their corresponding embeddings.
@@ -46,7 +48,10 @@ docker build --no-cache Pretraining/ -t safe-pretraining
 
 2. Run the main script within the docker container:
 ```bash
-docker run --rm -v <path_to_the_acfg_disasm_dir>:/input -v <path_to_the_safe_pretraining_output_dir>:/output -it safe-pretraining /code/safe_pretraining.py -i /input -o /output
+docker run --rm \
+    -v <path_to_the_acfg_disasm_dir>:/input \
+    -v <path_to_the_safe_pretraining_output_dir>:/output \
+    -it safe-pretraining /code/safe_pretraining.py -i /input -o /output
 ```
 
 You can see all options of the `safe_pretraining.py` command with:
@@ -57,7 +62,10 @@ docker run --rm -it safe-pretraining /code/safe_pretraining.py --help
 
 Example: run `safe_pretraining.py` on the Dataset-1:
 ```bash
-docker run --rm -v $(pwd)/../../DBs/Dataset-1/features/training/acfg_disasm_Dataset-1_training:/input -v $(pwd)/Pretraining/:/output -it safe-pretraining /code/safe_pretraining.py -i /input -o /output/Dataset-1_training
+docker run --rm \
+    -v $(pwd)/../../DBs/Dataset-1/features/training/acfg_disasm_Dataset-1_training:/input \
+    -v $(pwd)/Pretraining/:/output \
+    -it safe-pretraining /code/safe_pretraining.py -i /input -o /output/Dataset-1_training_$(date +'%Y-%m-%d')
 ```
 
 ## Part 2
@@ -82,7 +90,11 @@ docker build --no-cache Preprocessing/ -t safe-preprocessing
 
 2. Run the main script within the docker container: 
 ```bash
-docker run --rm -v <path_to_the_acfg_disasm_dir>:/input -v <path_to_the_safe_pretraining_output_dir>:/instruction_embeddings -v <path_to_the_safe_preprocessing_output_dir>:/output -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output
+docker run --rm \
+    -v <path_to_the_acfg_disasm_dir>:/input \
+    -v <path_to_the_safe_pretraining_output_dir>:/instruction_embeddings \
+    -v <path_to_the_safe_preprocessing_output_dir>:/output \
+    -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output
 ```
 
 You can see all options of the `safe_preprocessing.py` command with:
@@ -94,34 +106,58 @@ docker run --rm -it safe-preprocessing /code/safe_preprocessing.py --help
 
 * Example: run `safe_preprocessing.py` on the Dataset-1_training
 ```bash
-docker run --rm  -v $(pwd)/../../DBs/Dataset-1/features/training/acfg_disasm_Dataset-1_training:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/output -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-1_training
+docker run --rm \
+    -v $(pwd)/../../DBs/Dataset-1/features/training/acfg_disasm_Dataset-1_training:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/output \
+    -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-1_training
 ```
 
 * Example: run `safe_preprocessing.py` on the Dataset-1_validation
 ```bash
-docker run --rm  -v $(pwd)/../../DBs/Dataset-1/features/validation/acfg_disasm_Dataset-1_validation:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/output -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-1_validation
+docker run --rm \
+    -v $(pwd)/../../DBs/Dataset-1/features/validation/acfg_disasm_Dataset-1_validation:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/output \
+    -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-1_validation
 ```
 
 * Example: run `safe_preprocessing.py` on the Dataset-1_testing
 ```bash
-docker run --rm  -v $(pwd)/../../DBs/Dataset-1/features/testing/acfg_disasm_Dataset-1_testing:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/output -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-1_testing
+docker run --rm \
+    -v $(pwd)/../../DBs/Dataset-1/features/testing/acfg_disasm_Dataset-1_testing:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/output \
+    -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-1_testing
 ```
 
 * Example: run `safe_preprocessing.py` on the Dataset-2
 ```bash
-docker run --rm  -v $(pwd)/../../DBs/Dataset-2/features/acfg_disasm_Dataset-2:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/output -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-2
+docker run --rm \
+    -v $(pwd)/../../DBs/Dataset-2/features/acfg_disasm_Dataset-2:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/output \
+    -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-2
 ```
 
 * Example: run `safe_preprocessing.py` on the Dataset-Vulnerability
 ```bash
-docker run --rm  -v $(pwd)/../../DBs/Dataset-Vulnerability/features/acfg_disasm_Dataset-Vulnerability:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/output -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-Vulnerability
+docker run --rm \
+    -v $(pwd)/../../DBs/Dataset-Vulnerability/features/acfg_disasm_Dataset-Vulnerability:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/output \
+    -it safe-preprocessing /code/safe_preprocessing.py -i /input -o /output/Dataset-Vulnerability
 ```
 
 ---
 
 Run unittest:
 ```bash
-docker run --rm -v $(pwd)/Preprocessing/testdata/:/input -v $(pwd)/Pretraining/instruction_embeddings:/instruction_embeddings -v $(pwd)/Preprocessing/testdata/safe_intermediate:/output -it safe-preprocessing /bin/bash -c "( cd /code && python3 -m unittest test_safe_preprocessing.py )"
+docker run --rm \
+    -v $(pwd)/Preprocessing/testdata/:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing/testdata/safe_intermediate:/output \
+    -it safe-preprocessing /bin/bash -c "( cd /code && python3 -m unittest test_safe_preprocessing.py )"
 ```
 
 ## Part 3
@@ -149,8 +185,15 @@ docker build --no-cache NeuralNetwork/ -t safe-neuralnetwork
 
 2. Run the SAFE neural network within the Docker container:
 ```bash
-docker run --rm 
-    -v $(pwd)/../../DBs:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/preprocessing  -v $(pwd)/NeuralNetwork/:/output  -it safe-neuralnetwork /code/safe_nn.py (--train | --validate | --test) [--num_epochs 5] --dataset {one,two,vuln} -c /code/model_checkpoint_$(date +'%Y-%m-%d') -o /output/Dataset-x
+docker run --rm \
+    -v $(pwd)/../../DBs:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/preprocessing \
+    -v $(pwd)/NeuralNetwork/:/output \
+    -it safe-neuralnetwork /code/safe_nn.py (--train | --validate | --test) [--num_epochs 5] \
+        --dataset {one,two,vuln} \
+        -c /code/model_checkpoint_$(date +'%Y-%m-%d') \
+        -o /output/Dataset-x
 ```
 
 The `safe_nn.py` program uses the path to the `/input` folder to locate the necessary files to run the training, validation and testing for the Dataset-1, Dataset-2 and Dataset-Vulnerability. The program uses the default paths to locate the `embeddings.npy` and `instructions_embeddings_list_250.json` files under the `/instruction_embeddings` and `/preprocessing` folders. Different paths can be specified using different command line options.
@@ -170,31 +213,76 @@ docker run --rm -it safe-neuralnetwork /code/safe_nn.py --help
 
 * Example: run the training on the Dataset-1
 ```bash
-docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/preprocessing -v $(pwd)/NeuralNetwork/:/output -it safe-neuralnetwork /code/safe_nn.py --train --num_epochs 5 --dataset one -c /output/model_checkpoint_$(date +'%Y-%m-%d') -o /output/Dataset-1_training
+docker run --rm \
+    -v $(pwd)/../../DBs:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/preprocessing \
+    -v $(pwd)/NeuralNetwork/:/output \
+    -it safe-neuralnetwork /code/safe_nn.py \
+        --train \
+        --num_epochs 5 \
+        --dataset one \
+        -c /output/model_checkpoint_$(date +'%Y-%m-%d') \
+        -o /output/Dataset-1_training
 ```
 
 The new trained model will be saved in `$(pwd)/NeuralNetwork/model_checkpoint_$(date +'%Y-%m-%d')`. Use the `--restore` option to continue the training from an existing checkpoint.
 
 * Example: run the validation on Dataset-1 using the [model_checkpoint](NeuralNetwork/model_checkpoint) that we trained on Dataset-1:
 ```bash
-docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/preprocessing -v $(pwd)/NeuralNetwork/:/output -it safe-neuralnetwork /code/safe_nn.py --validate --dataset one -c /code/model_checkpoint -o /output/Dataset-1_validation
+docker run --rm \
+    -v $(pwd)/../../DBs:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/preprocessing \
+    -v $(pwd)/NeuralNetwork/:/output \
+    -it safe-neuralnetwork /code/safe_nn.py \
+        --validate \
+        --dataset one \
+        -c /code/model_checkpoint \
+        -o /output/Dataset-1_validation
 ```
 
 * Example: run the testing on Dataset-1 using the [model_checkpoint](NeuralNetwork/model_checkpoint) that we trained on Dataset-1:
 ```bash
-docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/preprocessing -v $(pwd)/NeuralNetwork/:/output -it safe-neuralnetwork /code/safe_nn.py --test --dataset one -c /code/model_checkpoint -o /output/Dataset-1_testing
+docker run --rm \
+    -v $(pwd)/../../DBs:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/preprocessing \
+    -v $(pwd)/NeuralNetwork/:/output \
+    -it safe-neuralnetwork /code/safe_nn.py \
+        --test \
+        --dataset one \
+        -c /code/model_checkpoint \
+        -o /output/Dataset-1_testing
 ```
 
 * Example: run the testing on Dataset-2 using the [model_checkpoint](NeuralNetwork/model_checkpoint) that we trained on Dataset-1:
 ```bash
-docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/preprocessing -v $(pwd)/NeuralNetwork/:/output -it safe-neuralnetwork /code/safe_nn.py --test --dataset two -c /code/model_checkpoint -o /output/Dataset-2_testing
+docker run --rm \
+    -v $(pwd)/../../DBs:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/preprocessing \
+    -v $(pwd)/NeuralNetwork/:/output \
+    -it safe-neuralnetwork /code/safe_nn.py \
+        --test \
+        --dataset two \
+        -c /code/model_checkpoint \
+        -o /output/Dataset-2_testing
 ```
 
 * Example: run the testing on Dataset-Vulnerability using the [model_checkpoint](NeuralNetwork/model_checkpoint) that we trained on Dataset-1:
 ```bash
-docker run --rm -v $(pwd)/../../DBs:/input -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings -v $(pwd)/Preprocessing:/preprocessing -v $(pwd)/NeuralNetwork/:/output -it safe-neuralnetwork /code/safe_nn.py --test --dataset vuln -c /code/model_checkpoint -o /output/Dataset-Vulnerability_testing
+docker run --rm \
+    -v $(pwd)/../../DBs:/input \
+    -v $(pwd)/Pretraining/Dataset-1_training:/instruction_embeddings \
+    -v $(pwd)/Preprocessing:/preprocessing \
+    -v $(pwd)/NeuralNetwork/:/output \
+    -it safe-neuralnetwork /code/safe_nn.py \
+        --test \
+        --dataset vuln \
+        -c /code/model_checkpoint \
+        -o /output/Dataset-Vulnerability_testing
 ```
-
 
 ## How to use SAFE on a new dataset of functions
 

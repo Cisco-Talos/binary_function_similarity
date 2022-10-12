@@ -156,7 +156,7 @@ def main():
                         action='store_true', default=False,
                         help='Continue the training from the last checkpoint')
 
-    parser.add_argument('--dateset', required=True,
+    parser.add_argument('--dataset', required=True,
                         choices=['one', 'two', 'vuln'],
                         help='Choose the dataset to use for the train or test')
 

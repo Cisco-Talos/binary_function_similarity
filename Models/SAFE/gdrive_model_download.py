@@ -42,14 +42,14 @@ MODELS_DICT = {
     "NeuralNetwork/model_checkpoint.zip":
     "1SPYsR5Is8IJVTPNpStCdX7ibx-G3E2G3",
     "Pretraining/Dataset-1_training.zip":
-    "1gqHfVGrS1JVd1nvCjLge_5Bp8dv-xYNe"
+    "1aMEvw6iFA2aYzCVfQZ9NkZKvMJpEDWRl"
 }
 
 SHA256_DICT = {
     "NeuralNetwork/model_checkpoint.zip":
     "7699e824cacfe2d6590b8b569a6240a0905b46cd1e68d311259cc43e5373dfa1",
     "Pretraining/Dataset-1_training.zip":
-    "8fee06f635576496c8ccd59189a8a416af9c1bb0aece34e71441641093b560b3"
+    "320ec3026b58f1f557f13b780093b5aad1160342070c76b27174dbe508c32f79"
 }
 
 
