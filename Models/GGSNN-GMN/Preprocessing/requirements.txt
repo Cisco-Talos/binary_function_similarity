@@ -1,0 +1,5 @@
+click==8.0.4
+networkx==2.5
+numpy==1.22.3
+scipy==1.7.3
+tqdm==4.64.0
