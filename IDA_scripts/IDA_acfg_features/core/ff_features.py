@@ -56,6 +56,8 @@ def get_size_local_vars(fva):
     Return:
         the size of local variables
     """
+    if hasattr(idc, 'get_func_attr'):
+        return idc.get_func_attr(fva, idc.FUNCATTR_FRSIZE)
     return idc.GetFrameLvarSize(fva)
 
 

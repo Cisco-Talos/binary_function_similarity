@@ -205,7 +205,7 @@ def get_basic_blocks(fva):
 
 def get_bb_disasm(bb, md, prefix):
     """Return the (nomalized) disassembly for a BasicBlock."""
-    b64_bytes = base64.b64encode(idc.get_bytes(bb.va, bb.size))
+    b64_bytes = base64.b64encode(idc.get_bytes(bb.va, bb.size)).decode()
     bb_heads, bb_mnems, bb_disasm, bb_norm = \
         capstone_disassembly(md, bb.va, bb.size, prefix)
     return b64_bytes, bb_heads, bb_mnems, bb_disasm, bb_norm
@@ -280,12 +280,12 @@ def run_acfg_disasm(idb_path, fva_list, output_dir):
 if __name__ == '__main__':
     if not idaapi.get_plugin_options("acfg_disasm"):
         print("[!] -Oacfg_disasm option is missing")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     plugin_options = idaapi.get_plugin_options("acfg_disasm").split(":")
     if len(plugin_options) != 3:
         print("[!] -Oacfg_disasm:INPUT_JSON:IDB_PATH:OUTPUT_DIR is required")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     input_json = plugin_options[0]
     idb_path = plugin_options[1]
@@ -296,10 +296,10 @@ if __name__ == '__main__':
 
     if idb_path not in selected_functions:
         print("[!] Error! IDB path (%s) not in %s" % (idb_path, input_json))
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     fva_list = selected_functions[idb_path]
     print("[D] Found %d addresses" % len(fva_list))
 
     run_acfg_disasm(idb_path, fva_list, output_dir)
-    idc.Exit(0)
+    idaapi.qexit(0)
