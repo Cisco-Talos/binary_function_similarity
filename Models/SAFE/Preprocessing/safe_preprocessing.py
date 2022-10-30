@@ -84,7 +84,7 @@ def create_functions_dict(input_folder, ins2id_json, max_instructions):
         max_instructions: maximum number of instructions per basic block
 
     Return
-        dict: a dictionary with serialized adj and features matrices
+        dict: map each function to a list of instructions' ID
     """
     try:
         ins2id_dict = None
@@ -132,7 +132,7 @@ def log_instructions_coverage(functions_dict, output_dir):
     Log functions that have more than 50% of UNK instructions.
 
     Args:
-        functions_dict: a dictionary with functions' adj and features mat
+        functions_dict: map each function to a list of instructions' ID
         output_dir: output directory
     """
     output_path = os.path.join(output_dir, "log_coverage.txt")

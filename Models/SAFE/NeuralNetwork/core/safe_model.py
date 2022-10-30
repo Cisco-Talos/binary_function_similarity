@@ -154,7 +154,7 @@ class SAFEModel:
         Used with validation and testing.
 
         Args
-            batch_generator: a function generator for the dataset in input.
+            batch_generator: provides batches of input data.
         """
         evaluation_metrics = evaluate(
             self._session,
@@ -172,9 +172,8 @@ class SAFEModel:
         return evaluation_metrics['avg_pair_auc']
 
     def model_train(self, restore):
-        """
-        SAFE train
-        """
+        """Run model training"""
+
         # Create a training and validation dataset
         training_set, validation_set = \
             build_train_validation_generators(self._config)
