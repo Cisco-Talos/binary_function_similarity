@@ -37,7 +37,6 @@ import base64
 import idaapi
 import idc
 import json
-import ntpath
 import os
 import time
 
@@ -272,7 +271,7 @@ def run_acfg_disasm(idb_path, fva_list, output_dir):
             print("[!] Exception: skipping function fva: %d" % fva)
             print(e)
 
-    out_name = ntpath.basename(idb_path.replace(".i64", "_acfg_disasm.json"))
+    out_name = os.path.basename(idb_path.replace(".i64", "_acfg_disasm.json"))
     with open(os.path.join(output_dir, out_name), "w") as f_out:
         json.dump(output_dict, f_out)
 
