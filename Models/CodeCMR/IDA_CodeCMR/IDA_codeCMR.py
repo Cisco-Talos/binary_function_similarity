@@ -32,7 +32,6 @@ import idautils
 import idc
 import json
 import networkx as nx
-import ntpath
 import os
 import pickle
 import time
@@ -196,7 +195,7 @@ def run_codeCMR(idb_path, fva_list, output_dir):
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 
-    output_name = ntpath.basename(
+    output_name = os.path.basename(
         idb_path.replace(".i64", "").replace(".idb", ""))
     output_name += "_codeCMR.pkl"
     output_path = os.path.join(output_dir, output_name)

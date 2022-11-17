@@ -38,7 +38,6 @@ import idaapi
 import idautils
 import idc
 import json
-import ntpath
 import os
 import traceback
 
@@ -308,7 +307,7 @@ def run_fss(idb_path, fva_list, output_dir, use_capstone):
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 
-    out_json_name = ntpath.basename(idb_path.replace(".i64", ""))
+    out_json_name = os.path.basename(idb_path.replace(".i64", ""))
     out_json_name += "_Capstone_{}_fss.json".format(use_capstone)
     out_json_path = os.path.join(output_dir, out_json_name)
 
