@@ -221,7 +221,7 @@ def run_acfg_disasm(idb_path, fva_list, output_dir):
     output_dict = dict()
     output_dict[idb_path] = dict()
 
-    procname = idaapi.get_inf_structure().procName.lower()
+    procname = idaapi.get_inf_structure().procname.lower()
     bitness = get_bitness()
     output_dict[idb_path]['arch'] = convert_procname_to_str(procname, bitness)
     md, prefix = initialize_capstone(procname, bitness)

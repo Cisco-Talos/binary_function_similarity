@@ -223,7 +223,7 @@ def run_acfg_features(idb_path, fva_list, output_dir):
     output_dict = dict()
     output_dict[idb_path] = dict()
 
-    procname = idaapi.get_inf_structure().procName.lower()
+    procname = idaapi.get_inf_structure().procname.lower()
     bitness = get_bitness()
     md, arch = initialize_capstone(procname, bitness)
 
