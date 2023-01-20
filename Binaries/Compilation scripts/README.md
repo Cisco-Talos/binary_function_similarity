@@ -90,7 +90,7 @@ to simplify package building:
 all.internal: start.encap rest.encap # doc
 # This is what to compile if making a cross-compiler.
 all.cross: native gcc-cross$(exeext) cpp$(exeext) specs \
-	libgcc-support lang.all.cross @GENINSRC@ srcextra # doc 
+  libgcc-support lang.all.cross @GENINSRC@ srcextra # doc 
 ```
 
 - Remove the `install-man` and `install-info` subtargets under the `install` target, so that it ends up like this:
@@ -122,11 +122,11 @@ Additional tips and lessons learnt:
 
 - For the following `Makefiles/Makerules`, replace the `ln -f` by `ln -sf` so that they become symbolic links instead of hard links, otherwise it will not work if the files reside in an external (non ext-4) mount.
 ```bash
-glibc-2.20/Makerules:	ln -f $< $@
-glibc-2.20/nptl/Makefile:	ln -f $< $@
-glibc-2.20/nptl/Makefile:	ln -f $< $@
-glibc-2.20/nptl/Makefile:	ln -f $< $@
-glibc-2.20/posix/Makefile:	  ln -f $< $@/$$spec.new || $(INSTALL_PROGRAM) $< $@/$$spec.new; \
+glibc-2.20/Makerules: ln -f $< $@
+glibc-2.20/nptl/Makefile: ln -f $< $@
+glibc-2.20/nptl/Makefile: ln -f $< $@
+glibc-2.20/nptl/Makefile: ln -f $< $@
+glibc-2.20/posix/Makefile:    ln -f $< $@/$$spec.new || $(INSTALL_PROGRAM) $< $@/$$spec.new; \
 ```
 
 - For compiling `gcc-9`, it is important to do it in a case sensitive file system (VM shared directories and some virtual
@@ -136,27 +136,31 @@ file systems may not be case sensitive).
 ## Step 3: Compiling the binaries
 
 ### Step 3.1: Download the source from the following locations:
-* Clamav:
-  - git repository: https://github.com/Cisco-Talos/clamav-devel.git
+* UnRAR:
+  - Direct download: https://www.rarlab.com/rar/unrarsrc-5.5.3.tar.gz
+
+* ClamAV:
+  - Git repository: https://github.com/Cisco-Talos/clamav-devel.git
   - branch: `dev/0.102`, commit: `ee5a160840309eb933e73f4268a1e67f9e77961d`
 
-* Unrar:
-  - direct download: https://www.rarlab.com/rar/unrarsrc-5.5.3.tar.gz
-
 * Curl
-  - git repository: https://github.com/curl/curl
+  - Git repository: https://github.com/curl/curl
   - branch: `master`, commit: `d81dbae19f8876ad472e445d89760970c79cceaa`
  
 * Nmap
-  - direct download: https://nmap.org/dist/nmap-7.80.tar.bz2
+  - Direct download: https://nmap.org/dist/nmap-7.80.tar.bz2
 
-* Openssl
-  - git repository: https://github.com/openssl/openssl.git
+* OpenSSL
+  - Git repository: https://github.com/openssl/openssl.git
   - branch: `master`, commit: `187753e09ceab4c85a0041844e749658e8f712d3`
 
 * Zlib
-  - git repository: https://github.com/madler/zlib
+  - Git repository: https://github.com/madler/zlib
   - branch: `master`, commit: `cacf7f1d4e3d44d871b605da3b647f07d718623f`
+
+* Z3
+  - Git repository: https://github.com/Z3Prover/z3
+  - branch: `master`, commit: `0b486d26daea05f918643a9d277f12027f0bc2f6`
 
 ### Step 3.2: Apply the patches
 
