@@ -44,7 +44,6 @@ The following is a list of the main steps to follow based on the most common use
 	3. Some approaches require to run a specific post-processing script to convert the extracted features into the requested format
 	4. *Be aware* of the limitations of the ML models: new architectures, compilers and compiler options may require retraining them.
 
-
 ## How to cite our work
 Please use the following BibTeX:
 ```
@@ -61,6 +60,11 @@ publisher = {USENIX Association},
 month = aug,
 }
 ```
+
+## Errata corrects
+Our corrections to the published paper:
+
+- From Section *3.2 Selected Approaches*: "First, the binary diffing tools grouped in the middle box [13,16,83] have all been designed for a direct comparison of two binaries (e.g., they use the call graph) and they are all mono-architecture." This sentence is inaccurate because Bindiff and Diaphora also support the cross-architecture comparisons.
 
 ## License
 The code in this repository is licensed under the [MIT License](LICENSE), however some models and scripts depend on or pull in code that have different licenses.
