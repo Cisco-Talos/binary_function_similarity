@@ -6,7 +6,7 @@ The paper is available at this [link](https://www.usenix.org/system/files/sec22-
 
 
 ## Additional technical information
-The technical report, with additional information on the dataset and the selected approaches, is available at this [link](Additional technical information.pdf).
+The technical report, with additional information on the dataset and the selected approaches, is available at this [link](Additional%20technical%20information.pdf).
 
 
 ## Artifacts
