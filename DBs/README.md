@@ -208,7 +208,6 @@ Use the following steps only if you want to *recreate* the Dataset-1-CodeCMR:
 1. Download the Binaries of Dataset-1 following [these instructions](../Binaries/README.md#download-the-compiled-binaries-for-each-dataset). Then, generate the [corresponding IDBs](../IDA_scripts#generate-the-idbs-ida-databases)
 2. Run the [IDA_flowchart](../IDA_scripts/IDA_flowchart) plugin to get the list of candidate functions
 3. Use the [Dataset-1-CodeCMR creation.ipynb](Dataset-1-CodeCMR/Dataset-1-CodeCMR%20creation.ipynb) IPython Notebook to generate the function pairs and the list of selected functions
-    * **TODO**: This IPython notebook will be released soon.
 4. Run the [IDA_CodeCMR](../Models/CodeCMR/IDA_CodeCMR) plugin to extract the pickle files with the selected features.
 
 
