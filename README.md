@@ -75,6 +75,7 @@ The code in this repository is licensed under the [MIT License](LICENSE), howeve
 - The [`FunctionSimSearch` model](Models/functionsimsearch/) pulls the code from the [FunctionSimSearch project](https://github.com/googleprojectzero/functionsimsearch) which is released under Apache License 2.0.
 - The [`SAFE` model](Models/SAFE) contains part of the original source code of SAFE which is licensed under GPL v3.
 - The [`GGSNN` and `GMN` models](Models/GGSNN-GMN) contain part of the original [source code](https://github.com/deepmind/deepmind-research/blob/master/graph_matching_networks/graph_matching_networks.ipynb) which is licensed under Apache License 2.0.
+- The [`GNN-s2v` models](Models/GNN-s2v) contains part of the original [source code](https://github.com/lucamassarelli/Unsupervised-Features-Learning-For-Binary-Similarity) which is licensed under CC BY-NC-SA 4.0.
 
 ## Bugs and feedback
 For help or issues, please submit a GitHub issue.

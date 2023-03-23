@@ -8,7 +8,6 @@ This directory contains the code for the tested approaches:
 - [FunctionSimSearch](functionsimsearch)
 - [GGSNN and GMN](GGSNN-GMN)
 - [GNN-s2v](GNN-s2v)
-    * **TODO**: The code will be released soon
 - [SAFE](SAFE)
 - [Trex](Trex)
 - [Zeek](Zeek)
