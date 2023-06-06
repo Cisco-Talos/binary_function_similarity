@@ -163,11 +163,10 @@ def build_model(config, node_feature_dim, edge_feature_dim):
     else:
         raise ValueError('Unknown model type: {}'.format(config['model_type']))
 
-    graphs_per_batch = config['batch_size']
     if config['training']['mode'] == 'pair':
-        graphs_per_batch *= 2
+        graphs_per_batch = config['batch_size'] * 2
     elif config['training']['mode'] == 'triplet':
-        graphs_per_batch *= 4
+        graphs_per_batch = config['batch_size'] * 4
     else:
         raise ValueError('Unknown training mode: {}'.format(
             config['training']['mode']))
@@ -221,13 +220,13 @@ def build_model(config, node_feature_dim, edge_feature_dim):
     param_scale = tf.global_norm(params)
 
     # evaluation
-    model_inputs['n_graphs'] = graphs_per_batch
+    model_inputs['n_graphs'] = config['batch_size'] * 2
     eval_pairs = model(**model_inputs)
     x, y = reshape_and_split_tensor(eval_pairs, 2)
     similarity = compute_similarity(config, x, y)
     pair_auc = auc(similarity, placeholders['labels'])
 
-    model_inputs['n_graphs'] = graphs_per_batch
+    model_inputs['n_graphs'] = config['batch_size'] * 4
     eval_triplets = model(**model_inputs)
     x_1, y, x_2, z = reshape_and_split_tensor(eval_triplets, 4)
     sim_1 = compute_similarity(config, x_1, y)
