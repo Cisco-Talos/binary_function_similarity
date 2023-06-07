@@ -99,16 +99,21 @@ class GNNModel:
                               for k, v in metrics_to_print.items()])
         return info_str
 
-    def _create_network(self, batch_generator):
+    def _create_network(self, batch_generator, is_training):
         """Build the model and set _tensors, _placeholders and _model."""
         # Automatically infer the node and edge features dim.
-        # Choose among pair or triplet training
-        if self._config['training']['mode'] == 'pair':
-            training_it = batch_generator.pairs()
-            first_batch_graphs, _ = next(training_it)
+
+        _it = None
+        if is_training and self._config['training']['mode'] == 'triplet':
+            _it = batch_generator.triplets()
         else:
-            training_it = batch_generator.triplets()
-            first_batch_graphs = next(training_it)
+            _it = batch_generator.pairs()
+
+        first_batch_graphs = None
+        if is_training and self._config['training']['mode'] == 'pair':
+            first_batch_graphs, _ = next(_it)
+        else:
+            first_batch_graphs = next(_it)
 
         # Set the feature dimensions
         node_feature_dim = first_batch_graphs.node_features.shape[-1]
@@ -120,7 +125,7 @@ class GNNModel:
             self._config, node_feature_dim, edge_feature_dim)
         return
 
-    def _model_initialize(self, batch_generator):
+    def _model_initialize(self, batch_generator, is_training=True):
         """Create TF session, build the model, initialize TF variables"""
         tf.compat.v1.reset_default_graph()
 
@@ -136,7 +141,7 @@ class GNNModel:
         tf.compat.v1.set_random_seed(self._config['seed'] + 2)
 
         # Create the TF NN
-        self._create_network(batch_generator)
+        self._create_network(batch_generator, is_training=is_training)
 
         # Initialize all the variables
         init_ops = (tf.compat.v1.global_variables_initializer(),
@@ -281,7 +286,7 @@ class GNNModel:
             build_train_validation_generators(self._config)
 
         # Model initialization
-        self._model_initialize(training_set)
+        self._model_initialize(training_set, is_training=False)
 
         # Model restoring
         self._create_tfsaver()
@@ -298,9 +303,11 @@ class GNNModel:
         """Testing the GNN model on a single CSV with function pairs"""
 
         # Model initialization
-        training_set, validation_set = \
-            build_train_validation_generators(self._config)
-        self._model_initialize(training_set)
+        batch_generator = build_testing_generator(
+            self._config,
+            self._config['testing']['full_tests_inputs'][0])
+
+        self._model_initialize(batch_generator, is_training=False)
 
         # Model restoring
         self._create_tfsaver()
