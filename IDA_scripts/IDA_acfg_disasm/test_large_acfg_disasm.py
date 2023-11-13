@@ -41,13 +41,20 @@ from click.testing import CliRunner
 
 class TestIDAAcfgDisasm(unittest.TestCase):
 
+    maxDiff = None
+
     def remove_elaspesed_time(self, jd):
         """Elapsed time will be different in any run."""
         for idb, addr in jd.items():
             for va in addr:
-                if isinstance(jd[idb][va], dict) \
-                        and 'elapsed_time' in jd[idb][va]:
+                if not isinstance(jd[idb][va], dict):
+                    continue
+                if 'elapsed_time' in jd[idb][va]:
                     jd[idb][va]['elapsed_time'] = -1
+                if 'nodes' in jd[idb][va]:
+                    jd[idb][va]['nodes'] = sorted(jd[idb][va]['nodes'])
+                if 'edges' in jd[idb][va]:
+                    jd[idb][va]['edges'] = sorted(jd[idb][va]['edges'])
         return jd
 
     def test_acfg_disasm_large(self):

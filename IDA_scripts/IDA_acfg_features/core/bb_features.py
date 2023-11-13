@@ -30,7 +30,7 @@
 
 import idautils
 
-from architecture import ARCH_MNEM
+from .architecture import ARCH_MNEM
 
 
 def get_bb_strings(bb, string_list):
