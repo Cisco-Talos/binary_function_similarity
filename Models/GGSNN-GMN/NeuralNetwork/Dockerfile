@@ -12,6 +12,8 @@ RUN pip3 install Cython==0.29.30 && \
     pip3 install pythran==0.11.0 && \
     pip3 install SciPy==1.7.3
 
+RUN pip3 install grpcio==1.48.0
+
 RUN mkdir /code
 COPY requirements.txt /code/
 RUN pip3 install -r /code/requirements.txt
