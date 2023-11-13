@@ -41,7 +41,7 @@ import zipfile
 
 BINARIES_DICT = {
     "Dataset-1.zip": "1QpRgVJZTM52bfB6PvCKwVnmkKdHenUai",
-    "Dataset-2.zip": "11_opEXH-WAKQs_WjCEx97aibOPlGIhm7",
+    "Dataset-2.zip": "1m3zocusSER3Hgt5Q7C1et_dOT44oi8hX",
     "Dataset-Vulnerability.zip": "1i9CEJ7IGwyFF_3VlQWVsJRVW1XMXy96Z"
 }
 FEATURES_DICT = {
@@ -61,7 +61,7 @@ SHA256_DICT = {
     "Dataset-1.zip":
     "f45edac9a7414c3bef77b271bcba083656e148d08d2da8ed5d667d887af35e46",
     "Dataset-2.zip":
-    "fdedb72966e029f1e9d4e3f5f67bbd722f4a0c4c52e4ec3cf7152e916a7bc750",
+    "2157fe91b374cb0cc5cd35eacfcb331671b9058839ad9fdff5e44ccb9661ac35",
     "Dataset-Vulnerability.zip":
     "0b916bd0fc5107e34d5d06c0e7037337b6e0dc5042b475ca3be5ccba7d7d1bd7",
     "Dataset-1/features.zip":
@@ -131,8 +131,10 @@ def download_binaries():
 
             print("Extracting archive to {}...".format(BINARIES_FOLDER))
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(BINARIES_FOLDER)
-
+                if zip_name == "Dataset-2.zip":
+                    zip_ref.extractall(BINARIES_FOLDER, pwd=b'notasecret')
+                else:
+                    zip_ref.extractall(BINARIES_FOLDER)
             os.remove(zip_path)
             print()
     except Exception as e:
