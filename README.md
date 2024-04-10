@@ -65,6 +65,7 @@ month = aug,
 Our corrections to the published paper:
 
 - From Section *3.2 Selected Approaches*: "First, the binary diffing tools grouped in the middle box [13,16,83] have all been designed for a direct comparison of two binaries (e.g., they use the call graph) and they are all mono-architecture." This sentence is inaccurate because Bindiff and Diaphora also support the cross-architecture comparisons.
+- The two plots in Figure 2 display the results from Dataset-2. The left one corresponds to the XO tasks and the right one corresponds to the XA + XO task.
 
 ## License
 The code in this repository is licensed under the [MIT License](LICENSE), however some models and scripts depend on or pull in code that have different licenses.
