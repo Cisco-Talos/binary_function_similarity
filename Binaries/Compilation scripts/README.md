@@ -48,14 +48,14 @@ deb http://dk.archive.ubuntu.com/ubuntu/ xenial main
 deb http://dk.archive.ubuntu.com/ubuntu/ xenial universe
 ```
 
-- Add the following apt-repository
-```bash
-sudo add-apt-repository ppa:jonathonf/gcc-9.0
-```
-
 - Add the following apt-key:
 ```bash
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 084ECFC5828AB726
+```
+
+- Add the following apt-repository
+```bash
+sudo add-apt-repository ppa:jonathonf/gcc
 ```
 
 - Install the package list from this file [file](os_install_packages/ubuntu1804/package_list):
