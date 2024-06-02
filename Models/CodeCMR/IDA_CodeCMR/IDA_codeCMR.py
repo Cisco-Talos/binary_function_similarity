@@ -32,7 +32,6 @@ import idautils
 import idc
 import json
 import networkx as nx
-import ntpath
 import os
 import pickle
 import time
@@ -196,7 +195,7 @@ def run_codeCMR(idb_path, fva_list, output_dir):
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 
-    output_name = ntpath.basename(
+    output_name = os.path.basename(
         idb_path.replace(".i64", "").replace(".idb", ""))
     output_name += "_codeCMR.pkl"
     output_path = os.path.join(output_dir, output_name)
@@ -233,12 +232,12 @@ def run_codeCMR(idb_path, fva_list, output_dir):
 if __name__ == '__main__':
     if not idaapi.get_plugin_options("codeCMR"):
         print("[!] -OcodeCMR option is missing")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     plugin_options = idaapi.get_plugin_options("codeCMR").split(":")
     if len(plugin_options) != 3:
         print("[!] -Ofss:INPUT_JSON:IDB_PATH:OUTPUT_DIR")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     input_json = plugin_options[0]
     idb_path = plugin_options[1]
@@ -249,7 +248,7 @@ if __name__ == '__main__':
 
     if idb_path not in selected_functions:
         print("[!] Error! IDB path (%s) not in %s" % (idb_path, input_json))
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     fva_list = selected_functions[idb_path]
     print("[D] Found %d addresses" % len(fva_list))

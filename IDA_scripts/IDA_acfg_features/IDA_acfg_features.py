@@ -36,7 +36,6 @@
 import idautils
 import idc
 import json
-import ntpath
 import os
 import time
 
@@ -224,7 +223,7 @@ def run_acfg_features(idb_path, fva_list, output_dir):
     output_dict = dict()
     output_dict[idb_path] = dict()
 
-    procname = idaapi.get_inf_structure().procName.lower()
+    procname = idaapi.get_inf_structure().procname.lower()
     bitness = get_bitness()
     md, arch = initialize_capstone(procname, bitness)
 
@@ -265,7 +264,7 @@ def run_acfg_features(idb_path, fva_list, output_dir):
             print("[!] Exception: skipping function fva: %d" % fva)
             print(e)
 
-    out_name = ntpath.basename(idb_path.replace(".i64", "_acfg_features.json"))
+    out_name = os.path.basename(idb_path.replace(".i64", "_acfg_features.json"))
     with open(os.path.join(output_dir, out_name), "w") as f_out:
         json.dump(output_dict, f_out)
 
@@ -273,12 +272,12 @@ def run_acfg_features(idb_path, fva_list, output_dir):
 if __name__ == '__main__':
     if not idaapi.get_plugin_options("acfg_features"):
         print("[!] -Oacfg_features option is missing")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     plugin_options = idaapi.get_plugin_options("acfg_features").split(":")
     if len(plugin_options) != 3:
         print("[!] -Oacfg_features:INPUT_JSON:IDB_PATH:OUTPUT_DIR is required")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     input_json = plugin_options[0]
     idb_path = plugin_options[1]
@@ -289,10 +288,10 @@ if __name__ == '__main__':
 
     if idb_path not in selected_functions:
         print("[!] Error! IDB path (%s) not in %s" % (idb_path, input_json))
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     fva_list = selected_functions[idb_path]
     print("[D] Found %d addresses" % len(fva_list))
 
     run_acfg_features(idb_path, fva_list, output_dir)
-    idc.Exit(0)
+    idaapi.qexit(0)

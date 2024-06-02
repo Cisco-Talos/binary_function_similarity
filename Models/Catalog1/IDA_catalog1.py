@@ -111,12 +111,12 @@ def run_catalog1(idb_path, fva_list, sig_size, output_csv):
 if __name__ == '__main__':
     if not idaapi.get_plugin_options("catalog1"):
         print("[!] -Ocatalog1 option is missing")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     plugin_options = idaapi.get_plugin_options("catalog1").split(':')
     if len(plugin_options) != 4:
         print("[!] -Ocatalog1:INPUT_JSON:IDB_PATH:SIG_SIZE:OUTPUT_CSV is required")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     input_json = plugin_options[0]
     idb_path = plugin_options[1]
@@ -128,10 +128,10 @@ if __name__ == '__main__':
 
     if idb_path not in selected_functions:
         print("[!] Error! IDB path (%s) not in %s" % (idb_path, input_json))
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     fva_list = selected_functions[idb_path]
     print("[D] Found %d addresses" % len(fva_list))
 
     run_catalog1(idb_path, fva_list, sig_size, output_csv)
-    idc.Exit(0)
+    idaapi.qexit(0)

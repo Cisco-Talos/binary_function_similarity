@@ -38,7 +38,6 @@ import idaapi
 import idautils
 import idc
 import json
-import ntpath
 import os
 import traceback
 
@@ -62,7 +61,7 @@ def initialize_capstone():
     https://github.com/williballenthin/python-idb/blob/
     2de7df8356ee2d2a96a795343e59848c1b4cb45b/idb/idapython.py#L874
     """
-    procname = idaapi.get_inf_structure().procName.lower()
+    procname = idaapi.get_inf_structure().procname.lower()
     bitness = get_bitness()
     md = None
     prefix = "UNK_"
@@ -102,7 +101,7 @@ def initialize_capstone():
 
 def get_call_mnemonics():
     """Return different call instructions based on the arch."""
-    procname = idaapi.get_inf_structure().procName.lower()
+    procname = idaapi.get_inf_structure().procname.lower()
     print('[D] procName = {}'.format(procname))
 
     # Default choice
@@ -268,7 +267,7 @@ def get_flowgraph_from(address, use_capstone):
             for ii in idautils.Heads(block.start_ea, block.end_ea):
                 instructions.append((
                     ii,
-                    idc.GetMnem(ii),
+                    idaapi.ua_mnem(ii),
                     # FIXME: only two operands?
                     # It's ok for x86/64 but it will not work on other archs.
                     (idc.print_operand(ii, 0).replace("+var_", "-0x"),
@@ -308,7 +307,7 @@ def run_fss(idb_path, fva_list, output_dir, use_capstone):
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 
-    out_json_name = ntpath.basename(idb_path.replace(".i64", ""))
+    out_json_name = os.path.basename(idb_path.replace(".i64", ""))
     out_json_name += "_Capstone_{}_fss.json".format(use_capstone)
     out_json_path = os.path.join(output_dir, out_json_name)
 
@@ -335,12 +334,12 @@ def run_fss(idb_path, fva_list, output_dir, use_capstone):
 if __name__ == '__main__':
     if not idaapi.get_plugin_options("fss"):
         print("[!] -Ofss option is missing")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     plugin_options = idaapi.get_plugin_options("fss").split(":")
     if len(plugin_options) != 4:
         print("[!] -Ofss:INPUT_JSON:IDB_PATH:OUTPUT_DIR:USE_CAPSTONE")
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     input_json = plugin_options[0]
     idb_path = plugin_options[1]
@@ -356,10 +355,10 @@ if __name__ == '__main__':
 
     if idb_path not in selected_functions:
         print("[!] Error! IDB path (%s) not in %s" % (idb_path, input_json))
-        idc.Exit(1)
+        idaapi.qexit(1)
 
     fva_list = selected_functions[idb_path]
     print("[D] Found %d addresses" % len(fva_list))
 
     run_fss(idb_path, fva_list, output_dir, use_capstone)
-    idc.Exit(0)
+    idaapi.qexit(0)
