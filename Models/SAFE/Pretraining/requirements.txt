@@ -1,4 +1,4 @@
 click==8.0.4
 gensim==3.8.3
 numpy==1.22.3
-tqdm==4.64.0
+tqdm==4.66.3
